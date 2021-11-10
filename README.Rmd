@@ -18,15 +18,37 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of EpiGPlot is to ...
+The goal of EpiGPlot is to plot epigenetic genes expression values into interpretable data.
 
 ## Installation
 
 You can install the development version of EpiGPlot like so:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+require("devtools")
+install_github("kevbobli224/EpiGPlot", build_vignettes = TRUE)
+library("EpiGPlot")
 ```
+## Overview
+
+To list all functions available in the package: 
+``` r
+ls("package:EpiGPlot")
+```
+
+## Tutorials  
+  
+For tutorials and plot interpretation, refer to the vignette:
+
+``` r
+browseVignettes("EpiGPlot")
+```
+
+## Maintainer
+* Kevin Li (kevinbobby.li@mail.utoronto.ca)
+
+
+
 
 ## Example
 
