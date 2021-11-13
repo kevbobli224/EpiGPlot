@@ -66,30 +66,82 @@ loadEpigeneticData <- function(rda){
 #' @param dataset An n by 4 data frame containing necessary information of epigenetic genes information, usually loaded by the package's given function; see parseEpigeneticData and loadEpigeneticData
 #'
 #' @import ggplot2
-#' @import ggforce
-plotEpigeneticEV <- function(dataset=expValues,
-                             color.color= 'black'){
-    update_geom_defaults(ggforce::GeomCircle, list(colours=color.color))
-    aesP <- ggplot2::aes(x=tmpDat[,3], y=tmpDat[,4])
-    ggplot(tmpDat[,3:4], mapping=aesP) + geom_point()
-    ggplot2::geom_point(expValues[,3:4], mapping=aes(x=expValues[,3]))
+#' @importFrom ggrepel geom_text_repel
+normalized <- FALSE
+plotEpigeneticEV <- function(layout,
+                             normalized=FALSE,
+                             color.legend=TRUE,
+                             color.grey=FALSE,
+                             color.arrow="red",
+                             size.arrow=1,
+                             labels.num=0,
+                             labels.which=NULL){
+
+    #ggplot2::update_geom_defaults(ggforce::GeomCircle, list(color=layout[,3]))
+    aesP <- ggplot2::aes(x=layout[,1], y=layout[,2], color=layout[,3], label=labels.which)
+
+    aesP <- ggplot2::aes(x=layout[,1], y=layout[,2], color=layout[,3])
+    ePlot <- ggplot2::ggplot(data=layout[,1:2]) + ggplot2::geom_point(aesP)
+
+    xLab <- "Quantile over all genes"
+    yLab <- if(!normalized) "Expression Values" else "Normalized Expression Values"
+
+    ePlot <- ePlot + labs(x=xLab, y=yLab)
+    lLab <- c("cell_line", "fractionation", "primary_cell", "timecourse", "tissue")
+
+    if(!color.legend){
+        ePlot <- ePlot + theme(legend.position="none")
+    } else {
+        ePlot <- ePlot + scale_color_manual(values=unique(layout[,3]),labels=lLab) + labs(color="Sample Class")
+    }
+    if(color.grey){
+        ePlot <- ePlot + scale_color_grey(labels=lLab) + theme_classic()
+    }
+    if(labels.which){
+        w <- layout[testWhich,]
+        # testWhich <- c("serous cystadenocarcinoma cell line:HTOA", "chronic lymphocytic leukemia (T-CLL) cell line:SKW-3")
+        # Todo: replace parameters with function parameters
+        ePlot <- ePlot + ggrepel::geom_text_repel(data=layout[testWhich,],
+                                                  min.segment.length = 0,
+                                                  mapping=aes(x=layout[testWhich,1],
+                                                              y=layout[testWhich,2],
+                                                              label=rownames(layout[testWhich,]),
+                                                              segment.size=1,
+                                                              segment.color="red",
+                                                              ),
+                                                  nudge_x = .15,
+                                                  nudge_y = .5,
+                                                  arrow= arrow(length = unit(0.015, "npc")),
+                                                  max.iter = 1000)
+        ePlot
+
+    }
 }
 
 # head(pScaleRange(tmpDat[,3]))
 # head(tmpDat[,4])
+# coords <- data.frame(x=scaledEV, y=tmpDat[,4])
+# colnames(coords) <- c("Expression Value","Quantile over all genes")
+# layout <- cbind(coords,labs(title="", x=xLab, y="Quantile over all Genes"))
 layoutEpigeneticEV <- function(dataFrame,
                                normalized=FALSE){
     if(normalized){
         scaledEV <- pScaleRange(dataFrame[,3])
         xLab <- "Normalized Expression Value"
+        yDf <- scale(dataFrame[,4])
     } else {
         scaledEV <- dataFrame[,3]
         xLab <- "Expression Value"
+        yDf <- dataFrame[,4]
     }
+    layout <- data.frame(x=scaledEV, y=yDf)
+    pColours <- getGeneClassColour(dataFrame[,1])
+    layout$Colours <- pColours
+    # tmpSplit <- sapply(tmpDat[,2], function(x) strsplit(x,"CNhs")[[1]][1], USE.NAMES = FALSE)
 
-    layout <- cbind(labs(title="", x=xLab, y="Quantile over all Genes"))
-
-
+    rownames(layout) <- sapply(dataFrame[,2], function(x) strsplit(x,".CNhs")[[1]][1], USE.NAMES = FALSE)
+    colnames(layout) <- c(xLab, "Quantile over all genes", "Colour")
+    return(layout)
 }
 
 legendEpigeneticEV <- function(){
@@ -98,13 +150,27 @@ legendEpigeneticEV <- function(){
 
 # head(tmpDat[,1])
 # unique(tmpDat[,1])
-getGeneClassColour <- function(dataFrame,
-                               colourList=c("#e66101", "#fdb863", "#f7f7f7", "#b2abd2", "#5e3c99")){
-
+# layout[layout[,3]=="#e66101",3] <- "#1b9e77"
+getGeneClassColour <- function(dFClassName,
+                               colourList=c("#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e")){
+    colours <- dFClassName
+    for(gClass in unique(dFClassName)){
+        switch (gClass,
+            "cell_line" = i <- 1,
+            "fractionation" = i <- 2,
+            "primary_cell" = i <- 3,
+            "timecourse" = i <- 4,
+            "tissue" = i <- 5
+        )
+        colours[colours==gClass] <- colourList[i]
+    }
+    return(colours)
 }
 
 pScaleRange <- function(dataFrame){
     return((dataFrame - min(dataFrame))/(max(dataFrame)-min(dataFrame)))
 }
+
+
 
 
