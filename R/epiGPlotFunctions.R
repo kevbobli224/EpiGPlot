@@ -227,11 +227,11 @@ layoutEpigeneticEV <- function(dataFrame,
     }
 
     if(normalized){
-        scaledEV <- refDf[,3]
+        scaledEV <- pScaleRange(refDf[,3])
         xLab <- "Normalized Expression Value"
         yDf <- scale(dataFrame[,4])
     } else {
-        scaledEV <- pScaleRange(refDf[,3])
+        scaledEV <- refDf[,3]
         xLab <- "Expression Value"
         yDf <- refDf[,4]
     }

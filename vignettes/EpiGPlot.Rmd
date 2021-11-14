@@ -1,6 +1,11 @@
 ---
 title: "EpiGPlot"
-output: rmarkdown::html_vignette
+author: "Kevin Li"
+date: "`r format(Sys.time(), '%d %b %Y')`"
+output: 
+ rmarkdown::html_vignette:
+    toc: true
+    number_sections: false
 vignette: >
   %\VignetteIndexEntry{EpiGPlot}
   %\VignetteEngine{knitr::rmarkdown}
@@ -8,12 +13,59 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
+library(knitr)
 knitr::opts_chunk$set(
   collapse = TRUE,
+  warning = FALSE,
   comment = "#>"
 )
+set.seed(1)
 ```
 
+**EpiGPlot** is a simple R package for producing a interpretative plot for epigenetic factors and their expression values against all other test sample genes. For plotting purposes and graphing linear regression models: ***plotEpigeneticEV***
+
+For customizing plotting layouts and specifications: ***layoutEpigeneticEV***
+
+For parsing csv or loading rda data for a certain gene and their expression values amongst other genes: ***parseEpigeneticData***, ***loadEpigeneticData***
+
+Refer to `help(package = "EpiGPlot")` for further details.
+
+To download and install the package use the following commands:
+
 ```{r setup}
-library(EpiGPlot)
+require("devtools")
+install_github("kevbobli224/EpiGPlot", build_vignettes = TRUE)
+library("EpiGPlot")
 ```
+
+To list all available exported functions for users, use:
+
+``` {.r}
+lsf.str("package:EpiGPlot")
+```
+
+<br>
+
+## Details
+
+Given a epigenetic factor, proteins with DNA/Histone/Chromatin remodeling; a list of expression values are obtained as well as their quantile against all genes. The referenced sample category can be plotted and visualized using linear regression methods.
+
+## `plotEpigeneticEV` and `layoutEpigeneticEV`
+
+In `plotEpigeneticEV`, the layout data returned from `layoutEpigeneticEV` is used to carry out visualization methods. `layoutEpigeneticEV` is required for the second round of parsing of the data from .csv/.rda because it contains unorganized data columns which the return of the layout function will serve as the layout data for various plotting functions from ggplot2 package.
+
+User can specify various parameters from both `plotEpigeneticEV` and `layoutEpigeneticEV` in order to achieve an accurate plotting with specific parameters that are important for data interpretation.
+
+### `layoutEpigeneticEv` 
+
+To obtain a visualizable and plot-able data set, it must first be obtained from this function; where user can specify the operations and parameters that should the data be manipulated in a way that restricts future visual clutters. Furthermore, a simple centering algorithm can be performed if user wishes to center all expression values through the built-in base R function `scale`. This would allow data sets with extreme values to be normalized; this rescaling method will alter the range of expression values from 0 to 1.
+
+Given a list of expression values of a epigenetic factor, it can be rescaled from 0 to 1 for the purpose of ease of plotting by
+
+\begin{equation}
+
+f(x)=\frac{x'-min(x)}{max(x)-min(x)}
+
+\end{equation}
+
+where $x$ is a vector of expression values and $x'$ is individual elements of $x$.
