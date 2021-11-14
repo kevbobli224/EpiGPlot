@@ -18,23 +18,38 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of EpiGPlot is to plot epigenetic genes expression values into interpretable data.
+The goal of EpiGPlot is to plot epigenetic genes expression values into interpretable data. Main function __*plotEpigeneticEV*__ allows for specific lienar regression model visualization on user-specfied sample classes.
 
 ## Installation
 
 You can install the development version of EpiGPlot like so:
-
 ``` r
 require("devtools")
 install_github("kevbobli224/EpiGPlot", build_vignettes = TRUE)
 library("EpiGPlot")
-```
+``` 
+
+
 ## Overview
+
+`EpiGPlot` contains 4 exported functions for users:
+For plotting purposes and graphing linear regression models: __*plotEpigeneticEV*__
+
+For customizing plotting layouts and specifications: __*layoutEpigeneticEV*__
+
+For parsing csv or loading rda data for a certain gene and their expression values amongst other genes: __*parseEpigeneticData*__, __*loadEpigeneticData*__
 
 To list all functions available in the package: 
 ``` r
 ls("package:EpiGPlot")
 ```
+
+## Details
+
+```{r, echo=FALSE,out.width="49%", out.height="20%",fig.cap="Different parameters provided to the plot function.",fig.show='hold',fig.align='center'}
+knitr::include_graphics(c("inst/extdata/Plot1_default.png","inst/extdata/Plot2_spec_class.png", "inst/extdata/Plot3_spec_lr.png"))
+``` 
+For more details, see vignette
 
 ## Tutorials  
   
@@ -54,23 +69,10 @@ browseVignettes("EpiGPlot")
 
 This is a basic example which shows you how to solve a common problem:
 
-```{r example}
-library(EpiGPlot)
-## basic example code
+## Citation for Package
+``` r
+citation("EpiGPlot")
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
-
-```{r cars}
-summary(cars)
-```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/v1/examples>.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
+## References for Package
+* [Medvedeva, Y. A., Lennartsson, A., Ehsani, R., Kulakovskiy, I. V., Vorontsov, I. E., Panahandeh, P., Khimulya, G., Kasukawa, T., &amp; Drabløs, F. (2015). Epifactors: A comprehensive database of human epigenetic factors and complexes. Database, 2015.](https://doi.org/10.1093/database/bav067)

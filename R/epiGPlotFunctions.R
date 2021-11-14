@@ -98,8 +98,9 @@ plotEpigeneticEV <- function(layout,
 
     # Validate specified sample.class parameter for plotting.
     if(!is.null(sample.class)){
-        if(length(sample.class) > 0 && sample.class %in% lLab){
-            lLab <- lLab[sample.class %in% lLab]
+        if(length(sample.class) > 0 && any(sample.class %in% lLab)){
+            layout <- layout[layout[,4] %in% sample.class,]
+            lLab <- lLab[lLab %in% sample.class]
         } else {
             stop("Error: invalid specified sample.class!")
         }
@@ -118,16 +119,16 @@ plotEpigeneticEV <- function(layout,
     yLab <- "Quantile over all genes"
 
     # Modify plot labels
-    ePlot <- ePlot + labs(x=xLab, y=yLab)
+    ePlot <- ePlot + ggplot2::labs(x=xLab, y=yLab)
 
     # User-specified legend parameters
     if(!colour.legend){
-        ePlot <- ePlot + theme(legend.position="none")
+        ePlot <- ePlot + ggplot2::theme(legend.position="none")
     } else {
-        ePlot <- ePlot + scale_color_manual(values=cMat[1,],labels=lLab) + labs(colour="Sample Class")
+        ePlot <- ePlot + ggplot2::scale_color_manual(values=cMat[1,],labels=lLab) + ggplot2::labs(colour="Sample Class")
     }
     if(colour.grey){
-        ePlot <- ePlot + scale_color_grey(labels=lLab) + theme_classic()
+        ePlot <- ePlot + ggplot2::scale_color_grey(labels=lLab) + ggplot2::theme_classic()
     }
 
     # Labelling of user-specified sample genes, if given
@@ -149,7 +150,7 @@ plotEpigeneticEV <- function(layout,
                                                   min.segment.length = 0,
                                                   size=labels.size,
                                                   segment.size=size.arrow,
-                                                  mapping=aes(x=layout[parsedLabels,1],
+                                                  mapping=ggplot2::aes(x=layout[parsedLabels,1],
                                                               y=layout[parsedLabels,2],
                                                               label=parsedLabels,
                                                               colour=layout[parsedLabels,3]),
@@ -281,7 +282,8 @@ pScaleRange <- function(dFExp){
 #'
 #' @return Returns a 2x5 matrix, where the first row contains hex colour values, and the second row contains its corresponding sample class assigned colour
 getColourMatrix <- function(dataFrame){
-    cMat <- matrix(unique(dataFrame[,3]), nrow=1, ncol=5)
+    uCol <- unique(dataFrame[,3])
+    cMat <- matrix(uCol, nrow=1, ncol=length(uCol))
     cMat <- rbind(cMat, unique(dataFrame[,4]))
     return(cMat)
 }

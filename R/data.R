@@ -10,5 +10,5 @@
 #'   \item{Expression Value}{The expression values of the associated sample gene}
 #'   \item{Quantile over all genes}{The quantile percentage over all genes}
 #' }
-#' @source \url{http://www.diamondse.info/}
+#' @source \url{https://epifactors.autosome.ru/genes}
 "NO66_HUMAN"
