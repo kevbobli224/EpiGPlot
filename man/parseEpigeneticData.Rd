@@ -2,16 +2,16 @@
 % Please edit documentation in R/epiGPlotFunctions.R
 \name{parseEpigeneticData}
 \alias{parseEpigeneticData}
-\title{Parses epigenetic genes expression values from .csv files}
+\title{Parses epigenetic gene's expression values from .csv files}
 \usage{
-parseEpigeneticData(data = "expressions.csv")
+parseEpigeneticData(data)
 }
 \arguments{
-\item{data}{A file name for the epigenetic gene expression values file}
+\item{data}{A file name for the epigenetic gene expression values file including the .csv suffix}
 }
 \value{
-A data frame containing 4 columns of: Sample class, sample name, normalized expression value, and quantile range.
+Returns a data frame containing 4 columns of: Sample class, sample name, normalized expression value, and quantile range.
 }
 \description{
-Requires data to be in data folder, and file should contain 4 columns, separated by tabs.
+Requires data to be in inst/extdata folder, and file should contain 4 columns, separated by tabs.
 }
