@@ -14,7 +14,7 @@ A data frame with 889 rows of 4 variables:
 }
 }
 \source{
-\url{http://www.diamondse.info/}
+\url{https://epifactors.autosome.ru/genes}
 }
 \usage{
 NO66_HUMAN

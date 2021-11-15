@@ -12,13 +12,14 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include=FALSE}
 library(knitr)
 knitr::opts_chunk$set(
   collapse = TRUE,
   warning = FALSE,
   comment = "#>"
 )
+library(EpiGPlot)
 set.seed(1)
 ```
 
@@ -32,7 +33,7 @@ Refer to `help(package = "EpiGPlot")` for further details.
 
 To download and install the package use the following commands:
 
-```{r setup}
+```{r eval=FALSE, include=TRUE}
 require("devtools")
 install_github("kevbobli224/EpiGPlot", build_vignettes = TRUE)
 library("EpiGPlot")
@@ -56,16 +57,44 @@ In `plotEpigeneticEV`, the layout data returned from `layoutEpigeneticEV` is use
 
 User can specify various parameters from both `plotEpigeneticEV` and `layoutEpigeneticEV` in order to achieve an accurate plotting with specific parameters that are important for data interpretation.
 
-### `layoutEpigeneticEv` 
+### `layoutEpigeneticEv`
 
-To obtain a visualizable and plot-able data set, it must first be obtained from this function; where user can specify the operations and parameters that should the data be manipulated in a way that restricts future visual clutters. Furthermore, a simple centering algorithm can be performed if user wishes to center all expression values through the built-in base R function `scale`. This would allow data sets with extreme values to be normalized; this rescaling method will alter the range of expression values from 0 to 1.
+To obtain a visualizable and plot-able data set, it must first be obtained from this function; where user can specify the operations and parameters that should the data be manipulated in a way that restricts future visual clutters.
+
+Here, a sample class can be specified in order to prune out unnecessary comparisons of other sample classes, this will return a subset of the original data frame, keeping the specified sample class. Furthermore, a simple centering algorithm can be performed if user wishes to center all expression values through the built-in base R function `scale`. This would allow data sets with extreme values to be normalized; this rescaling method will alter the range of expression values from 0 to 1.
 
 Given a list of expression values of a epigenetic factor, it can be rescaled from 0 to 1 for the purpose of ease of plotting by
 
+```{=tex}
 \begin{equation}
 
 f(x)=\frac{x'-min(x)}{max(x)-min(x)}
 
 \end{equation}
-
+```
 where $x$ is a vector of expression values and $x'$ is individual elements of $x$.
+
+### `plotEpigeneticEV`
+
+Given a layout data from `layoutEpigeneticEV`, user can specify various parameters for visualization purposes. Most importantly, it allows user to perform and display linear regression models on specified sample classes for a given layout data.
+
+## Example on visualizing data
+
+An example data of the NO66_HUMAN gene provided in the package is used for visualization purpose:
+
+```{r echo=TRUE, warning=FALSE, fig.width=7, fig.height=7 }
+# Ensure that working directory is in /EpiGPlot
+setwd("..")
+# Initialize data variable
+rawData <- EpiGPlot::loadEpigeneticData("NO66_HUMAN.rda")
+# Create a normalized layout data set for cell line and tissue
+gLayout <- EpiGPlot::layoutEpigeneticEV(rawData, 
+                              normalized=TRUE, 
+                              sample.class=c("cell_line", "tissue"))
+# Plot the normalized layout data, with linear regression performed on the tissue sample class. Also displays the top 5 expression values' gene labels.
+gPlot <- EpiGPlot::plotEpigeneticEV(gLayout, 
+                          normalized=TRUE, 
+                          sample.pred = c("tissue"),
+                          labels.top=5)
+gPlot
+```

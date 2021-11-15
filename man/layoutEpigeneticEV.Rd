@@ -7,8 +7,8 @@
 layoutEpigeneticEV(
   dataFrame,
   normalized = FALSE,
-  sample.class = NA,
-  class.colour = NA
+  sample.class = c(),
+  class.colour = c()
 )
 }
 \arguments{

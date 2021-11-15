@@ -11,7 +11,7 @@
 #' @export
 parseEpigeneticData <- function(data){
     if(!nchar(data)){
-        stop("Error: Empty rda file name provided!")
+        stop("Error: Empty csv file name provided!")
     }
     dataPath <- paste("inst/extdata/", data, sep="")
     if(!file.exists(dataPath)){
@@ -199,13 +199,13 @@ plotEpigeneticEV <- function(layout,
 #' @export
 layoutEpigeneticEV <- function(dataFrame,
                                normalized=FALSE,
-                               sample.class=NA,
-                               class.colour=NA){
+                               sample.class=c(),
+                               class.colour=c()){
     refDf <- dataFrame
     sampleClass <- c("cell_line", "fractionation", "primary_cell", "timecourse", "tissue")
-    if(!is.na(sample.class) && any(sample.class %in% sampleClass)){
-        refDf <- refDf[refDf[,1]==sample.class,]
-        if(is.na(class.colour)){
+    if(length(sample.class)>0 && any(sample.class %in% sampleClass)){
+        refDf <- refDf[refDf[,1] %in% sample.class,]
+        if(length(class.colour)==0){
             pColours <- getGeneClassColour(refDf[,1])
         } else{
             if(length(sample.class) != length(class.colour)){
@@ -217,11 +217,14 @@ layoutEpigeneticEV <- function(dataFrame,
             pColours <- getGeneClassColour(refDf[,1], class.colour)
         }
     } else {
-        if(length(class.colour)!=5 && !is.na(class.colour)){
+        if(length(class.colour)!=5 && length(class.colour) > 0 && !length(sample.class)){
             stop("Error: length of class.colour must be of length 5 for unspecified sample classes")
-        } else if(is.na(class.colour)){
+        } else if(length(class.colour) == 0){
             pColours <- getGeneClassColour(refDf[,1])
         } else {
+            if("try-error" %in% class(try(grDevices::col2rgb(class.colour), silent=TRUE))){
+                stop("Error: class.colour contains invalid colour element.")
+            }
             pColours <- getGeneClassColour(refDf[,1], colourList = class.colour)
         }
     }
@@ -229,7 +232,7 @@ layoutEpigeneticEV <- function(dataFrame,
     if(normalized){
         scaledEV <- pScaleRange(refDf[,3])
         xLab <- "Normalized Expression Value"
-        yDf <- scale(dataFrame[,4])
+        yDf <- scale(refDf[,4])
     } else {
         scaledEV <- refDf[,3]
         xLab <- "Expression Value"
@@ -250,6 +253,7 @@ layoutEpigeneticEV <- function(dataFrame,
 #' @param colourList A custom colour palette for plotting purposes
 #'
 #' @return A n x 1 data frame with mapped colour string to its corresponding sample class
+#' @ex
 getGeneClassColour <- function(dFClassName,
                                colourList=c("#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e")){
     sColourList <- sort(colourList)
