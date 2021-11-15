@@ -23,7 +23,11 @@ library(EpiGPlot)
 set.seed(1)
 ```
 
-**EpiGPlot** is a simple R package for producing a interpretative plot for epigenetic factors and their expression values against all other test sample genes. For plotting purposes and graphing linear regression models: ***plotEpigeneticEV***
+**EpiGPlot** is a simple R package for producing a interpretative plot for epigenetic factors and their expression values against all other test sample genes.
+
+This package relies on minimal package dependencies, and can easily be expanded to support variety of data sets.
+
+For plotting purposes and graphing linear regression models: ***plotEpigeneticEV***
 
 For customizing plotting layouts and specifications: ***layoutEpigeneticEV***
 
