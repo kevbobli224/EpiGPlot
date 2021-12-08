@@ -26,3 +26,13 @@ Returns a layout containing 4 columns of: expression value, quantile over all ge
 \description{
 Cleans up the parsed csv/rda file data from obtained dataset, and returns a layout that can be used for plotting
 }
+\examples{
+\dontrun{
+rawData <- EpiGPlot::loadEpigeneticData("data/NO66_HUMAN.rda")
+gLayout <- EpiGPlot::layoutEpigeneticEV(rawData,
+                                       sample.class=c("cell_line", "tissue"),
+                                       class.colour=c("red", "blue"))
+nrow(gLayout) # 390
+unique(gLayout$Colour) # "red", "blue"
+}
+}

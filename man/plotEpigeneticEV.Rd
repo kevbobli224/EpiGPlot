@@ -12,7 +12,7 @@ plotEpigeneticEV(
   size.arrow = 1,
   size.pred = 1,
   labels.which = NULL,
-  labels.top = 3,
+  labels.top = 0,
   labels.size = 3,
   sample.class = NULL,
   sample.pred = NULL
@@ -46,4 +46,24 @@ Returns a plot that user can assign from its return value.
 }
 \description{
 Plots the expression vs quantile data in a scatterplot, linear regression can be visualized for user-specified sample class amongst other user-specified parameters
+}
+\examples{
+\dontrun{
+rawData <- EpiGPlot::loadEpigeneticData("data/NO66_HUMAN.rda")
+gLayout <- EpiGPlot::layoutEpigeneticEV(rawData,
+                                        normalized=TRUE,
+                                        sample.class=c("cell_line", "tissue"))
+gPlot <- EpiGPlot::plotEpigeneticEV(gLayout,
+                                    normalized=TRUE,
+                                    sample.pred = c("tissue"),
+                                    labels.top=5)
+gPlot
+
+gPlot <-
+EpiGPlot::plotEpigeneticEV(gLayout, sample.pred = c("tissue", "cell_line"),
+                         labels.which=c("chronic lymphocytic leukemia (T-CLL) cell line:SKW-3"))
+
+gPlot
+}
+
 }

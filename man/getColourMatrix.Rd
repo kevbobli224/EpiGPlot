@@ -2,7 +2,7 @@
 % Please edit documentation in R/epiGPlotFunctions.R
 \name{getColourMatrix}
 \alias{getColourMatrix}
-\title{Obtains a 2x5 colour matrix for cross-referencing colour values and sample classes}
+\title{Obtains a 2 x n colour matrix for cross-referencing colour values and sample classes}
 \usage{
 getColourMatrix(dataFrame)
 }
@@ -10,8 +10,8 @@ getColourMatrix(dataFrame)
 \item{dataFrame}{a layout data frame, usually used in the package's plotting function}
 }
 \value{
-Returns a 2x5 matrix, where the first row contains hex colour values, and the second row contains its corresponding sample class assigned colour
+Returns a 2 x n matrix, where the first row contains hex colour values, and the second row contains its corresponding sample class assigned colour
 }
 \description{
-Obtains a 2x5 colour matrix for cross-referencing colour values and sample classes
+Obtains a 2 x n colour matrix for cross-referencing colour values and sample classes
 }

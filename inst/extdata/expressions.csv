@@ -1,4 +1,4 @@
-﻿Sample class	Sample	Expression (RLE-normalized CAGE tags per million)	Quantile over all genes
+Sample class	Sample	Expression (RLE-normalized CAGE tags per million)	Quantile over all genes
 cell_line	serous cystadenocarcinoma cell line:HTOA.CNhs11827.10693-109F9	40.6	0.739
 cell_line	chronic lymphocytic leukemia (T-CLL) cell line:SKW-3.CNhs11714.10416-106C2	36.8	0.665
 cell_line	adrenal cortex adenocarcinoma cell line:SW-13.CNhs11893.10810-111A9	29.0	0.589

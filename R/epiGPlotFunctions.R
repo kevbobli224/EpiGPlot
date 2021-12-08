@@ -1,46 +1,69 @@
 #' Parses epigenetic gene's expression values from .csv files
 #'
-#' Requires data to be in inst/extdata folder, and file should contain 4 columns, separated by tabs.
+#' .csv file must contain 4 columns, separated by tabs. The column must contain following data in a particular order: sample class, sample name,  expression value, and quantile range. .csv files regarding epigenetic file data can be obtained through EpiFactors website.
 #'
 #' @param data A file name for the epigenetic gene expression values file including the .csv suffix
 #'
-#' @return Returns a data frame containing 4 columns of: Sample class, sample name, normalized expression value, and quantile range.
+#' @return Returns a data frame containing 4 columns of: Sample class, sample name, expression value, and quantile range.
 #'
 #' @importFrom utils read.delim
 #'
+#' @examples
+#' \dontrun{
+#' data <- parseEpigeneticData("./inst/extdata/expressions.csv")
+#' dim(data) # 889 4
+#' }
+#'
+#' @references
+#' Medvedeva, Y. A., Lennartsson, A., Ehsani, R., Kulakovskiy, I. V., Vorontsov, I. E., Panahandeh, P., Khimulya, G., Kasukawa, T., &amp; Drabløs, F. (2015). Epifactors: A comprehensive database of human epigenetic factors and complexes. Database, 2015.
+#' \href{http://database.oxfordjournals.org/content/2015/bav067.full}{Link}
+#'
 #' @export
 parseEpigeneticData <- function(data){
+    # Check if the data's path provided is empty
     if(!nchar(data)){
         stop("Error: Empty csv file name provided!")
     }
-    dataPath <- paste("inst/extdata/", data, sep="")
-    if(!file.exists(dataPath)){
-        stop(sprintf("Error: data not found in: %s", dataPath))
+    # Check if the data exists in the given data's path
+    if(!file.exists(data)){
+        stop(sprintf("Error: data not found in: %s", data))
     }
-    dF <- utils::read.delim(dataPath, sep="\t")
-    if(ncol(dF) < 4){
-        stop("Error: invalid epigenetic genes expression value file format.")
+
+    # Read file into variable dF
+    dF <- utils::read.delim(data, sep="\t")
+
+    # Check if number of columns provided in the .csv is not equal to 4
+    if(ncol(dF) != 4){
+        stop("Error: invalid epigenetic expression file, ensure the columns selected for exportation is equal to 4.")
     }
     return(dF)
 }
 
-#' Loads epigenetic gene's data from .rda file from the data subdirectory
+#' Loads epigenetic gene's data from an existing .rda file
 #'
-#' @param rda A string or char array containing the file name in the data subdirectory including the .rda suffix
+#' @param rda A string or char array containing the file including the .rda suffix
 #'
-#' @return Returns a data frame containing 4 columns of: Sample class, sample name, normalized expression value, and quantile range.
+#' @return Returns a data frame containing 4 columns of: Sample class, sample name, expression value, and quantile range.
+#'
+#' @examples
+#' \dontrun{
+#' data <- loadEpigeneticData("./data/NO66_HUMAN.rda")
+#' dim(data) # 889 4
+#' }
 #'
 #' @export
 loadEpigeneticData <- function(rda){
+    # Check if the data's path provided is empty
     if(!nchar(rda)){
         stop("Error: Empty rda file name provided!")
     }
-    dataPath <- paste("data/", rda, sep="")
-    if(!file.exists(dataPath)){
+    # Check if the data exists in the given data's path
+    if(!file.exists(rda)){
         stop("Error: Missing rda file for expression values!")
     }
+    # Set new private environment such that data set can be assigned when loaded
     pEnv <- new.env()
-    tmpDat <- get(load(dataPath, envir=pEnv))
+    tmpDat <- get(load(rda, envir=pEnv))
     return(tmpDat)
 }
 
@@ -65,6 +88,25 @@ loadEpigeneticData <- function(rda){
 #' @import ggplot2
 #' @importFrom ggrepel geom_text_repel
 #'
+#' @examples
+#' \dontrun{
+#' rawData <- EpiGPlot::loadEpigeneticData("data/NO66_HUMAN.rda")
+#' gLayout <- EpiGPlot::layoutEpigeneticEV(rawData,
+#'                                         normalized=TRUE,
+#'                                         sample.class=c("cell_line", "tissue"))
+#' gPlot <- EpiGPlot::plotEpigeneticEV(gLayout,
+#'                                     normalized=TRUE,
+#'                                     sample.pred = c("tissue"),
+#'                                     labels.top=5)
+#' gPlot
+#'
+#' gPlot <-
+#' EpiGPlot::plotEpigeneticEV(gLayout, sample.pred = c("tissue", "cell_line"),
+#'                          labels.which=c("chronic lymphocytic leukemia (T-CLL) cell line:SKW-3"))
+#'
+#' gPlot
+#' }
+#'
 #' @export
 plotEpigeneticEV <- function(layout,
                              normalized=FALSE,
@@ -73,7 +115,7 @@ plotEpigeneticEV <- function(layout,
                              size.arrow=1,
                              size.pred=1,
                              labels.which=NULL,
-                             labels.top=3,
+                             labels.top=0,
                              labels.size=3,
                              sample.class=NULL,
                              sample.pred=NULL){
@@ -196,36 +238,61 @@ plotEpigeneticEV <- function(layout,
 #'
 #' @importFrom grDevices col2rgb
 #'
+#' @examples
+#' \dontrun{
+#' rawData <- EpiGPlot::loadEpigeneticData("data/NO66_HUMAN.rda")
+#' gLayout <- EpiGPlot::layoutEpigeneticEV(rawData,
+#'                                        sample.class=c("cell_line", "tissue"),
+#'                                        class.colour=c("red", "blue"))
+#' nrow(gLayout) # 390
+#' unique(gLayout$Colour) # "red", "blue"
+#' }
 #' @export
 layoutEpigeneticEV <- function(dataFrame,
                                normalized=FALSE,
                                sample.class=c(),
                                class.colour=c()){
+    # Initialize a reference data frame that will be modified to accommodate
+    # for layout specification
     refDf <- dataFrame
-    sampleClass <- c("cell_line", "fractionation", "primary_cell", "timecourse", "tissue")
-    if(length(sample.class)>0 && any(sample.class %in% sampleClass)){
-        refDf <- refDf[refDf[,1] %in% sample.class,]
+
+    # Check if user has specify a group of class to be displayed
+    if(length(sample.class)>0){
+        # Subset the input data based on specified list of class
+        refDf <- refDf[which(refDf[,1] %in% sample.class),]
+        # Check if user has specify a group of colours to be displayed
         if(length(class.colour)==0){
+            # Get a list of colours based on the associated sample class
             pColours <- getGeneClassColour(refDf[,1])
         } else{
+            # Check if length of sample.class and class.colour matches for
+            # equal assignments
             if(length(sample.class) != length(class.colour)){
                 stop("Error: mismatch class.colour size compared to sample.class")
             }
+            # Check if class.colour contains invalid colours.
             if("try-error" %in% class(try(grDevices::col2rgb(class.colour), silent=TRUE))){
                 stop("Error: class.colour contains invalid colour element.")
             }
+            # Get a list of colours based on the associated sample class with
+            # specified colours from class.colour
             pColours <- getGeneClassColour(refDf[,1], class.colour)
         }
     } else {
-        if(length(class.colour)!=5 && length(class.colour) > 0 && !length(sample.class)){
-            stop("Error: length of class.colour must be of length 5 for unspecified sample classes")
+        # Check if specified class.colour is less than the number of unique sample classes
+        if(length(class.colour)<length(unique(refDf[,1])) && length(class.colour) > 0){
+            stop("Error: length of specified class.colour is lesser than the number of sample classes for unspecified sample classes")
         } else if(length(class.colour) == 0){
+            # For unspecfied class.colour, assign pColours with default colour palette
             pColours <- getGeneClassColour(refDf[,1])
         } else {
+            # Check if class.colour contains invalid colours.
             if("try-error" %in% class(try(grDevices::col2rgb(class.colour), silent=TRUE))){
                 stop("Error: class.colour contains invalid colour element.")
             }
-            pColours <- getGeneClassColour(refDf[,1], colourList = class.colour)
+            # Get a list of colours based on the associated sample class with
+            # specified colours from class.colour
+            pColours <- getGeneClassColour(refDf[,1], class.colour)
         }
     }
 
@@ -253,20 +320,21 @@ layoutEpigeneticEV <- function(dataFrame,
 #' @param colourList A custom colour palette for plotting purposes
 #'
 #' @return A n x 1 data frame with mapped colour string to its corresponding sample class
-#' @ex
 getGeneClassColour <- function(dFClassName,
                                colourList=c("#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e")){
-    sColourList <- sort(colourList)
+    # Check if unique sample classes exceed the number of colours
+    if(length(unique(dFClassName)) > length(colourList)){
+        stop("Error: unique class names exceed number of available colours.")
+    }
+
+    # Initialize a vector of classes assigned with its respective colour
+    availClass <- unique(dFClassName)
+    names(availClass) <- colourList[1:length(availClass)]
+
+    # Assign colours to each sample classes
     colours <- dFClassName
-    for(gClass in unique(dFClassName)){
-        switch (gClass,
-            "cell_line" = i <- 1,
-            "fractionation" = i <- 2,
-            "primary_cell" = i <- 3,
-            "timecourse" = i <- 4,
-            "tissue" = i <- 5
-        )
-        colours[colours==gClass] <- sColourList[i]
+    for(gClass in availClass){
+        colours[colours==gClass] <- names(availClass)[availClass == gClass]
     }
     return(colours)
 }
@@ -280,25 +348,17 @@ pScaleRange <- function(dFExp){
     return((dFExp - min(dFExp))/(max(dFExp)-min(dFExp)))
 }
 
-#' Obtains a 2x5 colour matrix for cross-referencing colour values and sample classes
+#' Obtains a 2 x n colour matrix for cross-referencing colour values and sample classes
 #'
 #' @param dataFrame a layout data frame, usually used in the package's plotting function
 #'
-#' @return Returns a 2x5 matrix, where the first row contains hex colour values, and the second row contains its corresponding sample class assigned colour
+#' @return Returns a 2 x n matrix, where the first row contains hex colour values, and the second row contains its corresponding sample class assigned colour
 getColourMatrix <- function(dataFrame){
+    # Obtain list of unique colours
     uCol <- unique(dataFrame[,3])
+    # Create a 1 x uCol matrix
     cMat <- matrix(uCol, nrow=1, ncol=length(uCol))
+    # Associate sample class to colour
     cMat <- rbind(cMat, unique(dataFrame[,4]))
     return(cMat)
 }
-
-# td <- loadEpigeneticData("expValues_NO66_HUMAN.rda")
-# nc <- c("#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3")
-# tdl <- layoutEpigeneticEV(td)
-# (tdp <- plotEpigeneticEV(tdl,sample.class="primary_cell",labels.top = 7, sample.pred=tp))
-#
-# tdm <- td[td[,1]=="primary_cell",]
-# colnames(tdm) <- c("c","s","y","x")
-# tlm <- lm(x~y, tdm)
-# tdp + geom_abline(intercept=tlm$coefficients[1], slope=tlm$coefficients[2], colour="#7570b3", size=1)
-# head(tdm)

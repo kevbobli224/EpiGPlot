@@ -8,7 +8,7 @@ testthat::test_that("Check parsing functions and data set",{
     setwd("../../../EpiGPlot")
 
     # Test loading rda data for data in data/ subdirectory
-    testData <- EpiGPlot::loadEpigeneticData("NO66_HUMAN.rda")
+    testData <- EpiGPlot::loadEpigeneticData("./data/NO66_HUMAN.rda")
     # Test for dimensions
     expect_equal(dim(testData), c(889, 4))
     # Incorrect input types for loadEpigeneticData
@@ -16,12 +16,12 @@ testthat::test_that("Check parsing functions and data set",{
     expect_error(EpiGPlot::loadEpigeneticData("dne.rda"), "Error: Missing rda file for expression values!")
 
     # Test parsing csv data for data in inst/extdata/ subdirectory
-    testData <- EpiGPlot::parseEpigeneticData("expressions.csv")
+    testData <- EpiGPlot::parseEpigeneticData("./inst/extdata/expressions.csv")
     # Test for dimensions
     expect_equal(dim(testData), c(889, 4))
     # Incorrect input types for parseEpigeneticData
     expect_error(EpiGPlot::parseEpigeneticData(""), "Error: Empty csv file name provided!")
-    expect_error(EpiGPlot::parseEpigeneticData("dne.csv"), "Error: data not found in: inst/extdata/dne.csv")
+    expect_error(EpiGPlot::parseEpigeneticData("dne.csv"), "Error: data not found in: dne.csv")
 })
 
 testthat::test_that("Checking layout function", {
@@ -42,7 +42,7 @@ testthat::test_that("Checking layout function", {
                  "Error: class.colour contains invalid colour element.")
 
     expect_error(EpiGPlot::layoutEpigeneticEV(testData, class.colour = c("red")),
-                 "Error: length of class.colour must be of length 5 for unspecified sample classes")
+                 "Error: length of specified class.colour is lesser than the number of sample classes for unspecified sample classes")
 
     # Test different parameters of layoutEpigeneticEV
     layout <- EpiGPlot::layoutEpigeneticEV(testData, sample.class=c("tissue"), normalized = TRUE)

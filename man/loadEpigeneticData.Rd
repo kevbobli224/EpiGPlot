@@ -2,16 +2,23 @@
 % Please edit documentation in R/epiGPlotFunctions.R
 \name{loadEpigeneticData}
 \alias{loadEpigeneticData}
-\title{Loads epigenetic gene's data from .rda file from the data subdirectory}
+\title{Loads epigenetic gene's data from an existing .rda file}
 \usage{
 loadEpigeneticData(rda)
 }
 \arguments{
-\item{rda}{A string or char array containing the file name in the data subdirectory including the .rda suffix}
+\item{rda}{A string or char array containing the file including the .rda suffix}
 }
 \value{
-Returns a data frame containing 4 columns of: Sample class, sample name, normalized expression value, and quantile range.
+Returns a data frame containing 4 columns of: Sample class, sample name, expression value, and quantile range.
 }
 \description{
-Loads epigenetic gene's data from .rda file from the data subdirectory
+Loads epigenetic gene's data from an existing .rda file
+}
+\examples{
+\dontrun{
+data <- loadEpigeneticData("./data/NO66_HUMAN.rda")
+dim(data) # 889 4
+}
+
 }

@@ -1,0 +1,13 @@
+citHeader("To cite EpiGPlot in publications use:")
+
+citEntry(
+  entry    = "Unpublished",
+  title    = "EpiGPlot: A visualization package foR epigenetic data",
+  author   = "Li Kevin",
+  note     = "Unpublished",
+  year     = "2021",
+  url      = "https://github.com/kevbobli224/EpiGPlot",
+  textVersion = paste(
+  "Kevin, L. (2021) EpiGPlot: A visualization package foR epigenetic data. Unpublished. URL https://github.com/kevbobli224/EpiGPlot"
+  )
+)

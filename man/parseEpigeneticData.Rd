@@ -10,8 +10,19 @@ parseEpigeneticData(data)
 \item{data}{A file name for the epigenetic gene expression values file including the .csv suffix}
 }
 \value{
-Returns a data frame containing 4 columns of: Sample class, sample name, normalized expression value, and quantile range.
+Returns a data frame containing 4 columns of: Sample class, sample name, expression value, and quantile range.
 }
 \description{
-Requires data to be in inst/extdata folder, and file should contain 4 columns, separated by tabs.
+.csv file must contain 4 columns, separated by tabs. The column must contain following data in a particular order: sample class, sample name,  expression value, and quantile range. .csv files regarding epigenetic file data can be obtained through EpiFactors website.
+}
+\examples{
+\dontrun{
+data <- parseEpigeneticData("./inst/extdata/expressions.csv")
+dim(data) # 889 4
+}
+
+}
+\references{
+Medvedeva, Y. A., Lennartsson, A., Ehsani, R., Kulakovskiy, I. V., Vorontsov, I. E., Panahandeh, P., Khimulya, G., Kasukawa, T., & Drabløs, F. (2015). Epifactors: A comprehensive database of human epigenetic factors and complexes. Database, 2015.
+\href{http://database.oxfordjournals.org/content/2015/bav067.full}{Link}
 }

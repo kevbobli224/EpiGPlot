@@ -8,7 +8,7 @@
 
 The goal of EpiGPlot is to plot epigenetic genes expression values into
 interpretable data. Main function ***plotEpigeneticEV*** allows for
-specific lienar regression model visualization on user-specfied sample
+specific linear regression model visualization on user-specified sample
 classes.
 
 ## Installation
@@ -21,14 +21,21 @@ install_github("kevbobli224/EpiGPlot", build_vignettes = TRUE)
 library("EpiGPlot")
 ```
 
+To run the Shiny App:
+
+``` r
+EpiGPlot::runEpiGPlot()
+```
+
 ## Description/Overview
 
 The package’s purpose is to plot and visualize epigenetic factor data
-sets into simple and interpretable visualization plots. Established
-epigenetic factor databases do not have visualization methods for gene
-data sets, this package aims to fill and addresses the visualization gap
-by plotting expression values of given gene set against a range of
-quantile genes.
+sets into simple and interpretable visualization plots.
+
+Established epigenetic factor databases do not have visualization
+methods for gene data sets, this package aims to fill and addresses the
+visualization gap by plotting expression values of given gene set
+against a range of quantile genes.
 
 `EpiGPlot` contains 4 exported functions for users: For plotting
 purposes and graphing linear regression models: ***plotEpigeneticEV***
@@ -36,20 +43,29 @@ purposes and graphing linear regression models: ***plotEpigeneticEV***
 For customizing plotting layouts and specifications:
 ***layoutEpigeneticEV***
 
-For parsing csv or loading rda data for a certain gene and their
+For parsing .csv or loading .rda data for a certain gene and their
 expression values amongst other genes: ***parseEpigeneticData***,
 ***loadEpigeneticData***
 
+Refer to vignette or manual for detailed usage of the provided
+functions.
+
+Function examples in the manuals are only given to the exported
+functions. Non-exported functions will not have an example.
+
+An overview of the package is illustrated below.
+![](./inst/extdata/overview.png)
+
+A Shiny application could be run for the ease of visualization. To run
+the Shiny App:
+
+``` r
+EpiGPlot::runEpiGPlot()
+```
+
+![](./inst/extdata/overview_shiny.png)
+
 ### Details
-
-<div class="figure" style="text-align: center">
-
-<img src="inst/extdata/Plot1_default.png" alt="Different parameters provided to the plot function." width="49%" height="20%" /><img src="inst/extdata/Plot2_spec_class.png" alt="Different parameters provided to the plot function." width="49%" height="20%" /><img src="inst/extdata/Plot3_spec_lr.png" alt="Different parameters provided to the plot function." width="49%" height="20%" />
-<p class="caption">
-Different parameters provided to the plot function.
-</p>
-
-</div>
 
 For more details, see vignette
 
@@ -77,11 +93,16 @@ A package tree structure is provided as below:
   |- data
     |- NO66_HUMAN.rda
   |- inst
+    |- CITATION
+    |- shiny-scripts
+      |- app.R
     |- extdata
       |- expression.csv
       |- Plot1_default.png
       |- Plot2_spec_class.png
       |- Plot3_spec_lr.png
+      |- overview.png
+      |- overview_shiny.PNG
   |- man
     |- getColourMattrix.Rd
     |- getGeneClassColour.Rd
@@ -94,6 +115,7 @@ A package tree structure is provided as below:
   |- R
     |- data.R
     |- epiGPlotFunctions.R
+    |- runEpiGPlot.R
   |- vignettes
     |- EpiGPlot.Rmd
     |- EpiGPlot.R
@@ -109,9 +131,10 @@ Or, refer to vignette for more details.
 ## Contributions
 
 The `plotEpigeneticEV` function uses `ggplot` and `ggrepel` packages to
-perform plotting functions, as well as `grDevices` packages for the
+perform plotting functions, as well as `grDevices` package for the
 `layoutEpigeneticEV` function to parse and validate hexadecimal colour
-strings.
+strings. `shiny` is utilized for interactive web application for ease of
+package interaction.
 
 ## References for Package
 
@@ -134,8 +157,13 @@ For tutorials and plot interpretation, refer to the vignette:
 browseVignettes("EpiGPlot")
 ```
 
-## Citation for Package
+## Sample Outputs
 
-``` r
-citation("EpiGPlot")
-```
+<div class="figure" style="text-align: center">
+
+<img src="inst/extdata/Plot1_default.png" alt="Different parameters provided to the plot function." width="49%" height="20%" /><img src="inst/extdata/Plot2_spec_class.png" alt="Different parameters provided to the plot function." width="49%" height="20%" /><img src="inst/extdata/Plot3_spec_lr.png" alt="Different parameters provided to the plot function." width="49%" height="20%" />
+<p class="caption">
+Different parameters provided to the plot function.
+</p>
+
+</div>
