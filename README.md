@@ -63,7 +63,9 @@ the Shiny App:
 EpiGPlot::runEpiGPlot()
 ```
 
-![](./inst/extdata/overview_shiny.png)
+An illustration of a shiny app:
+
+![](./inst/extdata/overview_shiny.PNG)
 
 ### Details
 
